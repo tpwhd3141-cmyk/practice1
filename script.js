@@ -31,7 +31,18 @@ function closeCart() {
 }
 document.querySelector('.nav-btn-cart').addEventListener('click', openCart);
 
+function getCardPrice(btn) {
+  const card = btn.closest('.product-card');
+  const priceEl = card.querySelector('.card-price');
+  const raw = priceEl.textContent.replace(/[₩,]/g, '').trim();
+  return parseInt(raw) || 0;
+}
+
 function addToCart(btn, name, price) {
+  if (!price || price === 0) {
+    showToast('가격 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
   const existing = cart.find(i => i.name === name);
   if (existing) {
     existing.qty++;
@@ -112,8 +123,9 @@ document.querySelectorAll('.filter-tab').forEach(tab => {
   });
 });
 
-// ===== PRICE TICKER (구글 시트 연동) =====
+// ===== 구글 시트 연동 =====
 const SHEET_ID = '1gMqKhtWwTAizoBGlrGDpm6sl5c6vmbotGzg3qXl16-w';
+let currentKrwPerOz = 0;
 
 async function updatePrices() {
   try {
@@ -123,44 +135,56 @@ async function updatePrices() {
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
     const row = json.table.rows[0].c;
 
-    const xauPrice = row[0]?.v;  // A2: 달러 가격 (oz당)
-    const krwPrice = row[3]?.v;  // D2: 원화 가격 (oz당)
+    const xauPrice = row[0]?.v;  // A2: 달러/oz
+    const krwPrice = row[3]?.v;  // D2: 원화/oz
 
     if (xauPrice) {
       const xauEl = document.getElementById('xau-price');
       const xauChange = document.getElementById('xau-change');
       if (xauEl) xauEl.textContent = `$${Number(xauPrice).toFixed(2)}/oz`;
-      if (xauChange) {
-        xauChange.textContent = '실시간';
-        xauChange.className = 'ticker-change up';
-      }
+      if (xauChange) { xauChange.textContent = '실시간'; xauChange.className = 'ticker-change up'; }
+
+      // 차트 가격 업데이트
+      const chartPrice = document.getElementById('chart-price');
+      if (chartPrice) chartPrice.textContent = `$${Number(xauPrice).toFixed(2)}`;
     }
 
     if (krwPrice) {
+      currentKrwPerOz = krwPrice;
+      const pricePerGram = Math.round(krwPrice / 31.1035);
+
       const goldEl = document.getElementById('gold-price');
       const goldChange = document.getElementById('gold-change');
-      // oz → g 변환 (1oz = 31.1035g)
-      const pricePerGram = Math.round(krwPrice / 31.1035);
       if (goldEl) goldEl.textContent = `₩${pricePerGram.toLocaleString()}/g`;
-      if (goldChange) {
-        goldChange.textContent = '실시간';
-        goldChange.className = 'ticker-change up';
-      }
-    }
+      if (goldChange) { goldChange.textContent = '실시간'; goldChange.className = 'ticker-change up'; }
 
-    // 은/백금 티커 아이템 제거
-    const silverItem = document.getElementById('silver-price')?.closest('.ticker-item');
-    const platinumItems = document.querySelectorAll('.ticker-item');
-    platinumItems.forEach(item => {
-      const name = item.querySelector('.ticker-name')?.textContent || '';
-      if (name.includes('은') || name.includes('백금')) {
-        item.remove();
-      }
-    });
+      // 상품 카드 가격 업데이트
+      updateCardPrices(krwPrice);
+    }
 
   } catch (e) {
     console.error('구글 시트 연동 오류:', e);
   }
+}
+
+function updateCardPrices(krwPerOz) {
+  const OZ = 31.1035;
+  document.querySelectorAll('.product-card').forEach(card => {
+    const premium = parseFloat(card.dataset.premium) || 1.03;
+    const grams = parseFloat(card.dataset.grams);
+    let price;
+
+    if (grams) {
+      // 30g 판다처럼 g단위 상품
+      price = Math.round((krwPerOz / OZ) * grams * premium);
+    } else {
+      // 1oz 상품
+      price = Math.round(krwPerOz * premium);
+    }
+
+    const priceEl = card.querySelector('.card-price');
+    if (priceEl) priceEl.textContent = `₩${price.toLocaleString()}`;
+  });
 }
 
 // 페이지 로드 시 즉시 실행 + 30초마다 업데이트
