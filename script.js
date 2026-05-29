@@ -112,37 +112,60 @@ document.querySelectorAll('.filter-tab').forEach(tab => {
   });
 });
 
-// ===== PRICE TICKER =====
-function updatePrices() {
-  const goldBase = 125430, xauBase = 2387.50, silverBase = 1420;
-  const goldDelta = (Math.random() - 0.48) * 200;
-  const xauDelta = (Math.random() - 0.48) * 5;
-  const silverDelta = (Math.random() - 0.52) * 10;
+// ===== PRICE TICKER (구글 시트 연동) =====
+const SHEET_ID = '1gMqKhtWwTAizoBGlrGDpm6sl5c6vmbotGzg3qXl16-w';
 
-  const gEl = document.getElementById('gold-price');
-  const xEl = document.getElementById('xau-price');
-  const sEl = document.getElementById('silver-price');
+async function updatePrices() {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+    const row = json.table.rows[0].c;
 
-  if (gEl) {
-    gEl.textContent = `₩${(goldBase + Math.floor(goldDelta)).toLocaleString()}/g`;
-    const gc = document.getElementById('gold-change');
-    gc.textContent = `${goldDelta >= 0 ? '+' : ''}${((goldDelta / goldBase) * 100).toFixed(2)}%`;
-    gc.className = `ticker-change ${goldDelta >= 0 ? 'up' : 'down'}`;
-  }
-  if (xEl) {
-    xEl.textContent = `$${(xauBase + xauDelta).toFixed(2)}/oz`;
-    const xc = document.getElementById('xau-change');
-    xc.textContent = `${xauDelta >= 0 ? '+' : ''}${((xauDelta / xauBase) * 100).toFixed(2)}%`;
-    xc.className = `ticker-change ${xauDelta >= 0 ? 'up' : 'down'}`;
-  }
-  if (sEl) {
-    sEl.textContent = `₩${(silverBase + Math.floor(silverDelta)).toLocaleString()}/g`;
-    const sc = document.getElementById('silver-change');
-    sc.textContent = `${silverDelta >= 0 ? '+' : '-'}${Math.abs((silverDelta / silverBase) * 100).toFixed(2)}%`;
-    sc.className = `ticker-change ${silverDelta >= 0 ? 'up' : 'down'}`;
+    const xauPrice = row[0]?.v;  // A2: 달러 가격 (oz당)
+    const krwPrice = row[3]?.v;  // D2: 원화 가격 (oz당)
+
+    if (xauPrice) {
+      const xauEl = document.getElementById('xau-price');
+      const xauChange = document.getElementById('xau-change');
+      if (xauEl) xauEl.textContent = `$${Number(xauPrice).toFixed(2)}/oz`;
+      if (xauChange) {
+        xauChange.textContent = '실시간';
+        xauChange.className = 'ticker-change up';
+      }
+    }
+
+    if (krwPrice) {
+      const goldEl = document.getElementById('gold-price');
+      const goldChange = document.getElementById('gold-change');
+      // oz → g 변환 (1oz = 31.1035g)
+      const pricePerGram = Math.round(krwPrice / 31.1035);
+      if (goldEl) goldEl.textContent = `₩${pricePerGram.toLocaleString()}/g`;
+      if (goldChange) {
+        goldChange.textContent = '실시간';
+        goldChange.className = 'ticker-change up';
+      }
+    }
+
+    // 은/백금 티커 아이템 제거
+    const silverItem = document.getElementById('silver-price')?.closest('.ticker-item');
+    const platinumItems = document.querySelectorAll('.ticker-item');
+    platinumItems.forEach(item => {
+      const name = item.querySelector('.ticker-name')?.textContent || '';
+      if (name.includes('은') || name.includes('백금')) {
+        item.remove();
+      }
+    });
+
+  } catch (e) {
+    console.error('구글 시트 연동 오류:', e);
   }
 }
-setInterval(updatePrices, 3000);
+
+// 페이지 로드 시 즉시 실행 + 30초마다 업데이트
+updatePrices();
+setInterval(updatePrices, 30000);
 
 // 티커 무한 스크롤
 const tickerItems = document.getElementById('ticker-items');
