@@ -184,9 +184,9 @@ function updateCardPrices(krwPerOz) {
     let price;
 
     if (grams) {
-      price = Math.round((krwPerOz / OZ) * grams * premium);
+      price = Math.round((krwPerOz / OZ) * grams * premium / 1000) * 1000;  // 1000원 단위 반올림
     } else {
-      price = Math.round(krwPerOz * premium);
+      price = Math.round(krwPerOz * premium / 1000) * 1000;  // 1000원 단위 반올림
     }
 
     const priceEl = card.querySelector('.card-price');
