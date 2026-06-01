@@ -23,14 +23,12 @@ document.getElementById('slider-prev').addEventListener('click', () => goToSlide
 document.getElementById('slider-next').addEventListener('click', () => goToSlide(currentSlide + 1));
 dots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
 
-// 자동 슬라이드 5초
 let autoSlide = setInterval(() => goToSlide(currentSlide + 1), 5000);
 document.querySelector('.hero-slider').addEventListener('mouseenter', () => clearInterval(autoSlide));
 document.querySelector('.hero-slider').addEventListener('mouseleave', () => {
   autoSlide = setInterval(() => goToSlide(currentSlide + 1), 5000);
 });
 
-// 터치 스와이프
 let touchStartX = 0;
 document.querySelector('.hero-slider').addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
@@ -126,10 +124,153 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ===== 구글 시트 연동 =====
-// 시트 구조: A=Gold_USD, B=Silver_USD, C=Platinum_USD, D=Update_Time, E=Exchange_Rate
-const SHEET_ID = '1gMqKhtWwTAizoBGlrGDpm6sl5c6vmbotGzg3qXl16-w';
+// ===== 상품명 → 이미지 파일명 매핑 =====
+// 상품명에 키워드가 포함되면 해당 이미지 사용
+// 새 상품 추가 시 여기에 추가하거나, images/ 폴더에 같은 이름으로 업로드
+const IMAGE_MAP = [
+  { keywords: ['메이플', 'maple'],           file: 'maple-2026.png' },
+  { keywords: ['브리타니아', 'britannia'],    file: 'britannia-2026.png' },
+  { keywords: ['캥거루', 'kangaroo'],         file: 'kangaroo-2026.png' },
+  { keywords: ['버팔로', 'buffalo'],          file: 'buffalo-2026.png' },
+  { keywords: ['이글', 'eagle'],             file: 'eagle-2026.png' },
+  { keywords: ['필하모닉', 'philharmonic'],   file: 'philharmonic-2026.png' },
+  { keywords: ['크루거', 'krugerrand'],       file: 'krugerrand-2026.png' },
+  { keywords: ['판다', 'panda'],             file: 'panda-2026.png' },
+  { keywords: ['코뿔소', 'rhino'],           file: 'rhino-2026.png' },
+  { keywords: ['성조지', '세인트조지', 'george'], file: 'george-2026.png' },
+];
 
+function getImageForProduct(name) {
+  const lower = name.toLowerCase();
+  for (const entry of IMAGE_MAP) {
+    if (entry.keywords.some(k => lower.includes(k))) {
+      return `images/${entry.file}`;
+    }
+  }
+  return null; // 매칭 없으면 null → 텍스트 플레이스홀더 사용
+}
+
+// 카테고리 코드 → 탭 filter 값 매핑
+function getCategoryFilter(category) {
+  const map = {
+    'gold_1oz': 'gold',
+    'gold':     'gold',
+    'silver_1oz': 'silver',
+    'silver':   'silver',
+    'collectible': 'collectible',
+    'other':    'other',
+    'accessories': 'accessories',
+    'merchandise': 'merchandise',
+  };
+  return map[category] || category;
+}
+
+// ===== 상품 카드 HTML 생성 =====
+function createProductCard(product, krwPrice) {
+  const { name, brand, category, premium, available, same_day } = product;
+  const imgSrc = getImageForProduct(name);
+  const filterCategory = getCategoryFilter(category);
+
+  const price = krwPrice
+    ? `₩${(Math.round(krwPrice * premium / 1000) * 1000).toLocaleString()}`
+    : '로딩중...';
+
+  const imgHTML = imgSrc
+    ? `<img src="${imgSrc}" alt="${name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+
+  const placeholderHTML = `
+    <div class="product-img-placeholder" style="${imgSrc ? 'display:none' : 'display:flex'}">
+      <span>${name.substring(0, 6)}</span>
+    </div>`;
+
+  const badges = [];
+  if (available === 'TRUE' || available === true) badges.push('<span class="badge badge-stock">재고있음</span>');
+  if (same_day === 'TRUE' || same_day === true) badges.push('<span class="badge badge-sameday">당일출고</span>');
+
+  return `
+    <div class="product-card" data-category="${filterCategory}" data-premium="${premium}">
+      <div class="product-img-area">
+        ${imgHTML}
+        ${placeholderHTML}
+        ${badges.length ? `<div class="product-badges">${badges.join('')}</div>` : ''}
+      </div>
+      <div class="product-info">
+        <p class="product-brand">${brand}</p>
+        <h3 class="product-name">${name}</h3>
+        <div class="product-price-wrap">
+          <span class="product-price card-price">${price}</span>
+        </div>
+        <button class="btn-cart" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">장바구니 담기</button>
+      </div>
+    </div>`;
+}
+
+// ===== 구글 시트 연동 =====
+const SHEET_ID = '1gMqKhtWwTAizoBGlrGDpm6sl5c6vmbotGzg3qXl16-w';
+let currentKrwPrice = null;
+let productsData = [];
+
+// 상품 탭에서 상품 목록 불러오기
+async function loadProducts() {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=상품`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+
+    const rows = json.table.rows;
+    productsData = rows.map(row => ({
+      name:      row.c[0]?.v || '',
+      brand:     row.c[1]?.v || '',
+      category:  row.c[2]?.v || 'gold',
+      premium:   parseFloat(row.c[3]?.v) || 1.03,
+      available: String(row.c[4]?.v),
+      same_day:  String(row.c[5]?.v),
+    })).filter(p => p.name); // 빈 행 제거
+
+    renderProducts();
+  } catch (e) {
+    console.error('상품 목록 로딩 오류:', e);
+    document.getElementById('products-grid').innerHTML =
+      '<p style="color:#888;text-align:center;padding:2rem;">상품을 불러오는 중 오류가 발생했습니다.</p>';
+  }
+}
+
+// 상품 카드 렌더링
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  if (!productsData.length) return;
+
+  grid.innerHTML = productsData
+    .map(p => createProductCard(p, currentKrwPrice))
+    .join('');
+
+  // 현재 활성 탭 필터 적용
+  const activeTab = document.querySelector('.ptab.active');
+  if (activeTab) {
+    const filter = activeTab.dataset.filter;
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+    });
+  }
+
+  // 스크롤 애니메이션 재적용
+  applyScrollAnimation(document.querySelectorAll('.product-card'));
+}
+
+// 가격 업데이트 (카드 재렌더링 없이 가격만 교체)
+function updateCardPricesFromSheet(krwPerOz) {
+  currentKrwPrice = krwPerOz;
+  document.querySelectorAll('.product-card').forEach(card => {
+    const premium = parseFloat(card.dataset.premium) || 1.03;
+    const price = Math.round(krwPerOz * premium / 1000) * 1000;
+    const priceEl = card.querySelector('.product-price');
+    if (priceEl) priceEl.textContent = `₩${price.toLocaleString()}`;
+  });
+}
+
+// 시세/환율 불러오기 (계산 탭)
 async function updatePrices() {
   try {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=계산`;
@@ -138,46 +279,56 @@ async function updatePrices() {
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
     const row = json.table.rows[0].c;
 
-    const goldPrice    = row[0]?.v;  // A2: 금 USD/oz
-    const silverPrice  = row[1]?.v;  // B2: 은 USD/oz
-    const platPrice    = row[2]?.v;  // C2: 백금 USD/oz
-    const exchangeRate = row[4]?.v;  // E2: 환율 (USD→KRW)
+    const goldPrice    = row[0]?.v;
+    const silverPrice  = row[1]?.v;
+    const platPrice    = row[2]?.v;
+    const exchangeRate = row[4]?.v;
     const krwPrice     = (goldPrice && exchangeRate) ? goldPrice * exchangeRate : null;
 
-    // 탑바 업데이트
     if (goldPrice)    document.getElementById('tb-gold').textContent     = `$${Number(goldPrice).toFixed(2)}`;
     if (silverPrice)  document.getElementById('tb-silver').textContent   = `$${Number(silverPrice).toFixed(2)}`;
     if (platPrice)    document.getElementById('tb-platinum').textContent = `$${Number(platPrice).toFixed(2)}`;
     if (exchangeRate) document.getElementById('tb-rate').textContent     = `${Number(exchangeRate).toLocaleString()}원`;
 
-    // 상품 카드 가격 업데이트
-    if (krwPrice) updateCardPrices(krwPrice);
+    if (krwPrice) updateCardPricesFromSheet(krwPrice);
 
   } catch (e) {
-    console.error('구글 시트 연동 오류:', e);
+    console.error('시세 연동 오류:', e);
   }
 }
 
-function updateCardPrices(krwPerOz) {
-  const OZ = 31.1035;
-  document.querySelectorAll('.product-card').forEach(card => {
-    const premium = parseFloat(card.dataset.premium) || 1.03;
-    const grams = parseFloat(card.dataset.grams);
-    let price;
+// 초기 로딩: 상품 목록 → 시세 순서로
+loadProducts().then(() => updatePrices());
+setInterval(updatePrices, 30000);
 
-    if (grams) {
-      price = Math.round((krwPerOz / OZ) * grams * premium / 1000) * 1000;
-    } else {
-      price = Math.round(krwPerOz * premium / 1000) * 1000;
-    }
+// ===== SCROLL ANIMATIONS =====
+function applyScrollAnimation(els) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
 
-    const priceEl = card.querySelector('.product-price');
-    if (priceEl) priceEl.textContent = `₩${price.toLocaleString()}`;
+  els.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s, border-color 0.2s';
+    observer.observe(el);
   });
 }
 
-updatePrices();
-setInterval(updatePrices, 30000);
+document.querySelectorAll('.brand-card, .cat-banner').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s, border-color 0.2s';
+});
+applyScrollAnimation(document.querySelectorAll('.brand-card, .cat-banner'));
 
 // ===== HEADER SCROLL SHADOW =====
 window.addEventListener('scroll', () => {
@@ -186,26 +337,6 @@ window.addEventListener('scroll', () => {
     ? '0 4px 16px rgba(0,0,0,0.12)'
     : '0 2px 8px rgba(0,0,0,0.06)';
 }, { passive: true });
-
-// ===== SCROLL ANIMATIONS =====
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }, i * 80);
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.product-card, .brand-card, .cat-banner').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s, border-color 0.2s';
-  observer.observe(el);
-});
 
 // ===== SMOOTH ANCHOR SCROLL =====
 document.querySelectorAll('a[href^="#"]').forEach(a => {
