@@ -176,6 +176,22 @@
       padding: 6px 14px;
       opacity: 0.8;
     }
+    /* 카카오 플로팅 버튼 */
+    .kakao-float {
+      position: fixed;
+      right: 20px;
+      bottom: 80px;
+      width: 54px;
+      height: 54px;
+      background: #FEE500;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
   </style>
 </head>
 <body>
@@ -528,7 +544,11 @@
   </div>
 
   <div class="toast" id="toast"></div>
-  <a href="#" class="kakao-float">💬</a>
+  <a href="#" class="kakao-float">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.69 1.7 5.05 4.26 6.4L6.3 20.1a.4.4 0 0 0 .55.5l4.1-2.73c.34.03.69.05 1.05.05 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#3C1E1E"/>
+    </svg>
+  </a>
   <script src="script.js"></script>
 </body>
 </html>
