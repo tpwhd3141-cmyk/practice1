@@ -219,31 +219,6 @@
         <div id="tv-chart-container" style="height:600px;">
           <div class="tradingview-widget-container" style="height:100%;">
             <div id="tradingview_chart" style="height:100%;"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-            <script type="text/javascript">
-              var tvWidget = new TradingView.widget({
-                autosize: true,
-                symbol: "XAUUSD",
-                interval: "D",
-                timezone: "Asia/Seoul",
-                theme: "light",
-                style: "1",
-                locale: "kr",
-                toolbar_bg: "#f1f3f6",
-                enable_publishing: false,
-                hide_top_toolbar: false,
-                hide_legend: false,
-                save_image: false,
-                container_id: "tradingview_chart"
-              });
-
-              window.switchChart = function(type, btn) {
-                document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
-                const symbols = { gold: 'XAUUSD', silver: 'XAGUSD', platinum: 'XPTUSD' };
-                tvWidget.setSymbol(symbols[type], 'D', function(){});
-              };
-            </script>
           </div>
         </div>
       </div>
@@ -344,6 +319,33 @@
       mobileMenu.classList.toggle('open');
       document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
     });
+  </script>
+
+  <!-- TradingView 위젯: tv.js 먼저 로드 후 초기화 -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    var tvWidget = new TradingView.widget({
+      autosize: true,
+      symbol: "XAUUSD",
+      interval: "D",
+      timezone: "Asia/Seoul",
+      theme: "light",
+      style: "1",
+      locale: "kr",
+      toolbar_bg: "#f1f3f6",
+      enable_publishing: false,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: false,
+      container_id: "tradingview_chart"
+    });
+
+    function switchChart(type, btn) {
+      document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const symbols = { gold: 'XAUUSD', silver: 'XAGUSD', platinum: 'XPTUSD' };
+      tvWidget.setSymbol(symbols[type], 'D', function(){});
+    }
   </script>
 </body>
 </html>
