@@ -196,9 +196,9 @@
           <div class="sub">USD / Troy oz</div>
         </div>
         <div class="price-info-card">
-          <div class="label">원화 환산 (1oz)</div>
-          <div class="value" id="gold-krw">—</div>
-          <div class="sub">KRW 기준가</div>
+          <div class="label">SILVER · XAGUSD</div>
+          <div class="value" id="silver-val">—</div>
+          <div class="sub">USD / Troy oz</div>
         </div>
         <div class="price-info-card">
           <div class="label">환율 (USD/KRW)</div>
@@ -300,10 +300,9 @@
         const exchangeRate = row[4]?.v;
 
         if (goldPrice)    { document.getElementById('tb-gold').textContent = `$${Number(goldPrice).toFixed(2)}`; document.getElementById('gold-val').textContent = `$${Number(goldPrice).toFixed(2)}`; }
-        if (silverPrice)  document.getElementById('tb-silver').textContent = `$${Number(silverPrice).toFixed(2)}`;
+        if (silverPrice)  { document.getElementById('tb-silver').textContent = `$${Number(silverPrice).toFixed(2)}`; document.getElementById('silver-val').textContent = `$${Number(silverPrice).toFixed(2)}`; }
         if (platPrice)    document.getElementById('tb-platinum').textContent = `$${Number(platPrice).toFixed(2)}`;
         if (exchangeRate) { document.getElementById('tb-rate').textContent = `${Number(exchangeRate).toLocaleString()}원`; document.getElementById('rate-val').textContent = `${Number(exchangeRate).toLocaleString()}원`; }
-        if (goldPrice && exchangeRate) document.getElementById('gold-krw').textContent = `₩${Math.round(goldPrice * exchangeRate).toLocaleString()}`;
       } catch(e) { console.error(e); }
     }
     updatePrices();
