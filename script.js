@@ -189,18 +189,13 @@ function createProductCard(product, krwPrice) {
 
   // 배지
   const badges = [];
-  if (isSameDay) badges.push('<span class="badge badge-sameday">당일출고</span>');
 
   // 버튼
   let btnHTML;
   if (!isAvailable) {
     btnHTML = `<button class="btn-cart btn-soldout" disabled>품절</button>`;
   } else if (isSameDay) {
-    btnHTML = `
-      <button class="btn-cart btn-sameday" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">
-        ⚡ 지금 구매하기
-      </button>
-      <span class="btn-sameday-label">당일출고 가능</span>`;
+    btnHTML = `<button class="btn-cart btn-buy" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">당일수령 가능</button>`;
   } else {
     btnHTML = `<button class="btn-cart btn-buy" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">구매하기</button>`;
   }
