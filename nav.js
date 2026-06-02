@@ -108,3 +108,47 @@
 
 })();
 // ↑ 햄버거 이벤트, updatePrices, setInterval, 스크롤 그림자는 script.js에서 처리
+
+// ===== 탑바 시세 업데이트 (모든 페이지 공통) =====
+(function () {
+  const SHEET_ID = '1gMqKhtWwTAizoBGlrGDpm6sl5c6vmbotGzg3qXl16-w';
+
+  async function updateNavPrices() {
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=계산`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(
+        text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]
+      );
+      const row = json.table.rows[1].c;
+
+      const goldPrice    = row[0]?.v;
+      const silverPrice  = row[1]?.v;
+      const platPrice    = row[2]?.v;
+      const exchangeRate = row[4]?.v;
+
+      // 탑바 (모든 페이지 공통)
+      if (goldPrice)    document.getElementById('tb-gold').textContent     = `$${Number(goldPrice).toFixed(2)}`;
+      if (silverPrice)  document.getElementById('tb-silver').textContent   = `$${Number(silverPrice).toFixed(2)}`;
+      if (platPrice)    document.getElementById('tb-platinum').textContent = `$${Number(platPrice).toFixed(2)}`;
+      if (exchangeRate) document.getElementById('tb-rate').textContent     = `${Number(exchangeRate).toLocaleString()}원`;
+
+      // gold-price.html 카드 (해당 페이지에서만 존재)
+      const goldVal   = document.getElementById('gold-val');
+      const silverVal = document.getElementById('silver-val');
+      const rateVal   = document.getElementById('rate-val');
+      if (goldVal   && goldPrice)    goldVal.textContent   = `$${Number(goldPrice).toFixed(2)}`;
+      if (silverVal && silverPrice)  silverVal.textContent = `$${Number(silverPrice).toFixed(2)}`;
+      if (rateVal   && exchangeRate) rateVal.textContent   = `${Number(exchangeRate).toLocaleString()}`;
+
+    } catch (e) {
+      console.error('시세 연동 오류:', e);
+    }
+  }
+
+  setTimeout(() => {
+    updateNavPrices();
+    setInterval(updateNavPrices, 30000);
+  }, 300);
+})();
