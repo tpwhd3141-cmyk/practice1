@@ -9,184 +9,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-
-    /* 상품 로딩 스피너 */
-    .products-loading {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 4rem 0;
-      color: #888;
-      gap: 1rem;
-    }
-    .loading-spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid #2a2a2a;
-      border-top-color: #C8A84B;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+    .products-loading { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; padding: 4rem 0; color: #888; gap: 1rem; }
+    .loading-spinner { width: 36px; height: 36px; border: 3px solid #2a2a2a; border-top-color: #C8A84B; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* 이미지 없는 상품 플레이스홀더 */
-    .product-img-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-      color: #C8A84B;
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    /* 재고/당일출고 배지 */
-    .product-badges {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .badge {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 3px;
-      font-family: 'Noto Sans KR', sans-serif;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-    .badge-stock {
-      background: rgba(200, 168, 75, 0.15);
-      color: #C8A84B;
-      border: 1px solid rgba(200, 168, 75, 0.3);
-    }
-    .badge-sameday {
-      background: rgba(100, 200, 100, 0.12);
-      color: #7ecb7e;
-      border: 1px solid rgba(100, 200, 100, 0.25);
-    }
-
-    /* 버튼 래퍼 */
-    .btn-cart-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 5px;
-      margin-top: 10px;
-    }
-
-    /* 당일출고 구매 버튼 */
-    .btn-sameday {
-      background: linear-gradient(135deg, #C8A84B 0%, #F5E090 50%, #C8A84B 100%);
-      color: #1a1200;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 1px;
-      border: none;
-      padding: 11px 16px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-    .btn-sameday:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-    .btn-sameday-label {
-      text-align: center;
-      font-size: 10px;
-      color: #7ecb7e;
-      letter-spacing: 1px;
-      font-family: 'Noto Sans KR', sans-serif;
-    }
-
-    /* 당일수령 구매 버튼 */
-    .btn-sameday-buy {
-      width: 100%;
-      background: #C8A84B;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      font-size: 13px;
-      font-family: 'Noto Sans KR', sans-serif;
-      cursor: pointer;
-      transition: background 0.2s;
-      letter-spacing: 1px;
-    }
+    .product-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); color: #C8A84B; font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px; text-align: center; padding: 1rem; }
+    .product-badges { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 4px; }
+    .badge { font-size: 10px; padding: 2px 7px; border-radius: 3px; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
+    .badge-stock { background: rgba(200, 168, 75, 0.15); color: #C8A84B; border: 1px solid rgba(200, 168, 75, 0.3); }
+    .badge-sameday { background: rgba(100, 200, 100, 0.12); color: #7ecb7e; border: 1px solid rgba(100, 200, 100, 0.25); }
+    .btn-cart-wrap { display: flex; flex-direction: column; align-items: stretch; gap: 5px; margin-top: 10px; }
+    .btn-sameday { background: linear-gradient(135deg, #C8A84B 0%, #F5E090 50%, #C8A84B 100%); color: #1a1200; font-weight: 700; font-size: 13px; letter-spacing: 1px; border: none; padding: 11px 16px; cursor: pointer; border-radius: 3px; transition: opacity 0.2s, transform 0.15s; }
+    .btn-sameday:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-sameday-label { text-align: center; font-size: 10px; color: #7ecb7e; letter-spacing: 1px; font-family: 'Noto Sans KR', sans-serif; }
+    .btn-sameday-buy { width: 100%; background: #C8A84B; color: #fff; border: none; padding: 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s; letter-spacing: 1px; }
     .btn-sameday-buy:hover { background: #F5E090; color: #1a1200; }
-
-    /* 일반 구매 버튼 */
-    .btn-buy {
-      width: 100%;
-      background: #C8A84B;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      font-size: 13px;
-      font-family: 'Noto Sans KR', sans-serif;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      letter-spacing: 1px;
-    }
+    .btn-buy { width: 100%; background: #C8A84B; color: #fff; border: none; padding: 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, color 0.2s; letter-spacing: 1px; }
     .btn-buy:hover { background: #F5E090; color: #1a1200; }
-
-    /* 품절 버튼 */
-    .btn-soldout {
-      background: #2a2a2a;
-      color: #555;
-      border: 1px solid #333;
-      padding: 10px 16px;
-      font-size: 13px;
-      letter-spacing: 2px;
-      cursor: not-allowed;
-      border-radius: 3px;
-    }
-
-    /* 품절 카드 */
-    .card-soldout {
-      opacity: 0.6;
-    }
-    .soldout-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .soldout-overlay span {
-      font-family: 'Cinzel', serif;
-      font-size: 18px;
-      letter-spacing: 4px;
-      color: #fff;
-      border: 1px solid #fff;
-      padding: 6px 14px;
-      opacity: 0.8;
-    }
-    /* 카카오 플로팅 버튼 */
-    .kakao-float {
-      position: fixed;
-      right: 20px;
-      bottom: 80px;
-      width: 54px;
-      height: 54px;
-      background: #FEE500;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+    .btn-soldout { background: #2a2a2a; color: #555; border: 1px solid #333; padding: 10px 16px; font-size: 13px; letter-spacing: 2px; cursor: not-allowed; border-radius: 3px; }
+    .card-soldout { opacity: 0.6; }
+    .soldout-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; }
+    .soldout-overlay span { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 4px; color: #fff; border: 1px solid #fff; padding: 6px 14px; opacity: 0.8; }
+    .kakao-float { position: fixed; right: 20px; bottom: 80px; width: 54px; height: 54px; background: #FEE500; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s; }
   </style>
 </head>
 <body>
@@ -314,15 +157,12 @@
       <div class="product-tabs">
         <button class="ptab active" data-filter="gold">금화</button>
       </div>
-
-      <!-- 상품 그리드: 구글 시트에서 자동 로딩 -->
       <div class="products-grid" id="products-grid">
         <div class="products-loading">
           <div class="loading-spinner"></div>
           <p>상품을 불러오는 중...</p>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -366,72 +206,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-col">
-        <h4>카탈로그</h4>
-        <ul>
-          <li><a href="#">› 금화</a></li><li><a href="#">› 금바</a></li><li><a href="#">› 국내 금바</a></li>
-          <li><a href="#">› 기타 금</a></li><li><a href="#">› 은화</a></li><li><a href="#">› 은바</a></li>
-          <li><a href="#">› MIDAS BULLION 브랜드</a></li><li><a href="#">› 기타 은</a></li>
-          <li><a href="#">› 수집용 코인</a></li><li><a href="#">› 플래티넘</a></li>
-          <li><a href="#">› 팔라듐</a></li><li><a href="#">› 악세서리</a></li><li><a href="#">› 굿즈</a></li>
-        </ul>
-        <h4 style="margin-top:1.5rem">기타 서비스</h4>
-      </div>
-      <div class="footer-col">
-        <h4>회원 정보</h4>
-        <ul>
-          <li><a href="#">› 내 계정</a></li><li><a href="#">› 주문 내역</a></li><li><a href="#">› 고객센터</a></li>
-        </ul>
-        <h4 style="margin-top:1.5rem">관련 정보</h4>
-        <ul>
-          <li><a href="#">› 회사 소개</a></li><li><a href="#">› 온라인 예약</a></li>
-          <li><a href="#">› 거래 안내</a></li><li><a href="#">› 오시는 길</a></li>
-          <li><a href="#">› 귀금속 투명성</a></li><li><a href="#">› 정품 인증</a></li>
-          <li><a href="#">› 서비스 약관</a></li><li><a href="#">› 자주 묻는 질문</a></li>
-        </ul>
-      </div>
-      <div class="footer-locations">
-        <h4>오시는 길</h4>
-        <div class="location-grid">
-          <div class="location-item">
-            <strong>서울 본점</strong>
-            <p>서울특별시 종로구 종로 1가 1번지<br>타임스퀘어 CBD<br>02-1234-5678</p>
-            <p>월 - 금 09:00 - 18:00<br>점심시간 12:00 - 13:00</p>
-          </div>
-          <div class="location-item">
-            <strong>강남 지점</strong>
-            <p>서울특별시 강남구 테헤란로 123<br>강남파이낸스센터 10층<br>02-9876-5432</p>
-            <p>월 - 금 13:00 - 17:00</p>
-          </div>
-        </div>
-        <p class="location-notice">원활한 서비스를 위해 방문 전 예약을 권장합니다</p>
-        <div class="social-section">
-          <h4>소셜 미디어</h4>
-          <div class="social-icons">
-            <a href="#" class="social-icon facebook">f</a>
-            <a href="#" class="social-icon instagram">📷</a>
-            <a href="#" class="social-icon youtube">▶</a>
-            <a href="#" class="social-icon line">LINE</a>
-            <a href="#" class="social-icon kakao">K</a>
-          </div>
-        </div>
-        <div class="lang-section">
-          <h4>언어</h4>
-          <div class="lang-options">
-            <a href="#" class="lang-opt active">한국어</a>
-            <a href="#" class="lang-opt">English</a>
-            <a href="#" class="lang-opt">繁體中文</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 MIDAS BULLION 귀금속 전문점. 사업자등록번호: 123-45-67890</p>
-      <p>귀금속은 투자 위험이 있습니다. 투자 전 충분한 검토를 권장합니다.</p>
-    </div>
-  </footer>
+  <footer id="site-footer"></footer>
 
   <!-- Cart Sidebar -->
   <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
@@ -456,6 +231,8 @@
       <text x="16" y="15.8" text-anchor="middle" font-family="'Arial', sans-serif" font-size="7" font-weight="900" fill="#FEE500" letter-spacing="0.3">KAKAO</text>
     </svg>
   </a>
+
+  <script src="footer.js"></script>
   <script src="nav.js"></script>
   <script src="script.js"></script>
 </body>
