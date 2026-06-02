@@ -142,6 +142,11 @@
       if (silverVal && silverPrice)  silverVal.textContent = `$${Number(silverPrice).toFixed(2)}`;
       if (rateVal   && exchangeRate) rateVal.textContent   = `${Number(exchangeRate).toLocaleString()}`;
 
+      // index.html 상품 카드 가격 업데이트 (script.js의 함수 호출)
+      if (goldPrice && exchangeRate && typeof updateCardPricesFromSheet === 'function') {
+        updateCardPricesFromSheet(goldPrice * exchangeRate);
+      }
+
     } catch (e) {
       console.error('시세 연동 오류:', e);
     }
