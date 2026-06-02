@@ -66,7 +66,7 @@
         <div class="header-search">
           <div class="search-category">
             <select id="nav-select" onchange="if(this.value) { location.href=this.value; this.value=''; }">
-              <option value="">메뉴 선택</option>
+              <option value="">전체</option>
               <option value="coins.html">금화 보기</option>
               <option value="gold-price.html">금 시세</option>
               <option value="contact.html">구매 문의</option>
