@@ -9,16 +9,16 @@
       <div class="footer-col">
         <h4>카탈로그</h4>
         <ul>
-          <li><a href="#">› 금화</a></li><li><a href="#">› 금바</a></li><li><a href="#">› 국내 금바</a></li>
-          <li><a href="#">› 기타 금</a></li><li><a href="#">› 은화</a></li><li><a href="#">› 은바</a></li>
-          <li><a href="#">› MIDAS BULLION 브랜드</a></li><li><a href="#">› 기타 은</a></li>
-          <li><a href="#">› 수집용 코인</a></li><li><a href="#">› 플래티넘</a></li>
-          <li><a href="#">› 팔라듐</a></li><li><a href="#">› 악세서리</a></li><li><a href="#">› 굿즈</a></li>
+          <li><a href="#">› 금화</a></li><li><a href="#">› 금화1</a></li>
+          <li><a href="#">› 금화2</a></li><li><a href="#">› 금화3</a></li>
         </ul>
         <h4 style="margin-top:1.5rem">기타 서비스</h4>
+        <ul>
+          <li><a href="#">› 예정1</a></li><li><a href="#">› 예정2</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h4>회원 정보</h4>
+        <h4>문의 사항</h4>
         <ul>
           <li><a href="#">› 내 계정</a></li><li><a href="#">› 주문 내역</a></li><li><a href="#">› 고객센터</a></li>
         </ul>
