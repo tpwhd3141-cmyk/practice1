@@ -113,6 +113,21 @@
           <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
         </div>
       </div>`;
+
+    /* ── 드롭다운 이벤트 (header innerHTML 삽입 직후 바인딩) ── */
+    const btn = document.getElementById('dropdown-btn');
+    const menu = document.getElementById('dropdown-menu');
+    if (btn && menu) {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        btn.classList.toggle('open');
+        menu.classList.toggle('open');
+      });
+      document.addEventListener('click', () => {
+        btn.classList.remove('open');
+        menu.classList.remove('open');
+      });
+    }
   }
 
   /* ── Main Nav ── */
@@ -140,22 +155,6 @@
         <li><a href="contact.html">구매 문의</a></li>
       </ul>`;
   }
-
-  setTimeout(() => {
-    const btn = document.getElementById('dropdown-btn');
-    const menu = document.getElementById('dropdown-menu');
-    if (btn && menu) {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        btn.classList.toggle('open');
-        menu.classList.toggle('open');
-      });
-      document.addEventListener('click', () => {
-        btn.classList.remove('open');
-        menu.classList.remove('open');
-      });
-    }
-  }, 0);
 
 })();
 
