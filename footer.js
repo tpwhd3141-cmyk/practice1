@@ -11,6 +11,7 @@
         <ul>
           <li><a href="#">› 금화</a></li><li><a href="#">› 금화1</a></li>
           <li><a href="#">› 금화2</a></li><li><a href="#">› 금화3</a></li>
+          <li><a href="#">› 금화4</a></li>
         </ul>
         <h4 style="margin-top:1.5rem">기타 서비스</h4>
         <ul>
