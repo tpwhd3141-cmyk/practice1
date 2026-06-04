@@ -10,17 +10,81 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="nav.css">
   <style>
-    .sub-page { padding: 48px 0 80px; background: #f9f8f5; min-height: calc(100vh - 200px); }
-    .sub-page .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
-    .page-header { margin-bottom: 40px; display: flex; align-items: center; gap: 16px; }
+    * { box-sizing: border-box; }
+    .sub-page { padding: 48px 0 100px; background: #f9f8f5; min-height: calc(100vh - 200px); }
+    .sub-page .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .page-header { margin-bottom: 48px; display: flex; align-items: center; gap: 16px; }
     .page-header a { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #C8A84B; font-family: 'Noto Sans KR', sans-serif; text-decoration: none; transition: opacity 0.2s; }
     .page-header a:hover { opacity: 0.7; }
     .page-header h1 { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 600; color: #1a1a1a; }
     .page-header .divider { color: #ccc; }
-    .empty-state { text-align: center; padding: 100px 20px; color: #aaa; font-family: 'Noto Sans KR', sans-serif; }
-    .empty-state .empty-icon { font-size: 56px; margin-bottom: 20px; opacity: 0.4; }
-    .empty-state p { font-size: 15px; line-height: 1.8; color: #bbb; }
-    .empty-state .gold-line { display: block; width: 40px; height: 2px; background: linear-gradient(90deg, #C8A84B, #F5E090); margin: 20px auto; border-radius: 2px; }
+
+    /* 섹션 타이틀 */
+    .contact-title { text-align: center; margin-bottom: 48px; }
+    .contact-title h2 { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 600; color: #1a1a1a; letter-spacing: 3px; margin-bottom: 12px; }
+    .contact-title .gold-bar { display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .contact-title .gold-bar::before,
+    .contact-title .gold-bar::after { content: ''; display: block; width: 60px; height: 1px; background: linear-gradient(90deg, transparent, #C8A84B); }
+    .contact-title .gold-bar::after { background: linear-gradient(90deg, #C8A84B, transparent); }
+    .contact-title .gold-bar span { color: #C8A84B; font-size: 14px; }
+    .contact-title p { margin-top: 14px; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #888; line-height: 1.8; }
+
+    /* 레이아웃 */
+    .contact-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start; }
+    @media (max-width: 768px) { .contact-layout { grid-template-columns: 1fr; } }
+
+    /* 왼쪽: 연락처 정보 카드들 */
+    .contact-info { display: flex; flex-direction: column; gap: 16px; }
+    .info-card { background: #fff; border: 1px solid #e8e3d8; padding: 24px; transition: border-color 0.2s; }
+    .info-card:hover { border-color: #C8A84B; }
+    .info-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .info-icon { width: 36px; height: 36px; background: rgba(200,168,75,0.08); border: 1px solid rgba(200,168,75,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .info-icon svg { width: 18px; height: 18px; }
+    .info-card-header h3 { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; color: #C8A84B; }
+    .info-card p { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #333; line-height: 1.7; }
+    .info-card .info-value { font-size: 16px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; }
+    .info-card .info-sub { font-size: 12px; color: #aaa; }
+
+    /* 카카오 버튼 */
+    .kakao-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #FEE500; border: none; padding: 14px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 700; color: #3C1E1E; letter-spacing: 1px; transition: opacity 0.2s, transform 0.15s; text-decoration: none; }
+    .kakao-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* 운영시간 */
+    .hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; margin-top: 4px; }
+    .hours-row { display: flex; justify-content: space-between; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: #555; padding: 4px 0; border-bottom: 1px solid #f0ece2; }
+    .hours-row .day { color: #888; }
+    .hours-row .time { color: #333; font-weight: 500; }
+    .hours-row.closed .time { color: #C8A84B; }
+
+    /* 오른쪽: 문의 폼 */
+    .contact-form-wrap { background: #fff; border: 1px solid #e8e3d8; padding: 40px; }
+    .form-title { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #f0ece2; }
+    .form-row { margin-bottom: 20px; }
+    .form-row label { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: #888; letter-spacing: 1px; margin-bottom: 8px; }
+    .form-row label span { color: #C8A84B; margin-left: 2px; }
+    .form-row input,
+    .form-row select,
+    .form-row textarea { width: 100%; background: #faf9f6; border: 1px solid #e8e3d8; padding: 12px 14px; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #1a1a1a; outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+    .form-row input:focus,
+    .form-row select:focus,
+    .form-row textarea:focus { border-color: #C8A84B; background: #fff; }
+    .form-row textarea { resize: vertical; min-height: 130px; }
+    .form-row-double { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 500px) { .form-row-double { grid-template-columns: 1fr; } }
+    .form-agree { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 24px; }
+    .form-agree input[type=checkbox] { width: 16px; height: 16px; margin-top: 2px; accent-color: #C8A84B; flex-shrink: 0; }
+    .form-agree label { font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: #888; line-height: 1.6; cursor: pointer; }
+    .form-agree label a { color: #C8A84B; text-decoration: underline; }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, #C8A84B 0%, #F5E090 50%, #C8A84B 100%); background-size: 200% 100%; color: #1a1200; font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; letter-spacing: 3px; border: none; padding: 16px; cursor: pointer; transition: background-position 0.4s, transform 0.15s; }
+    .btn-submit:hover { background-position: 100% 0; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* 성공 메시지 */
+    .form-success { display: none; text-align: center; padding: 60px 20px; }
+    .form-success .success-icon { font-size: 48px; margin-bottom: 16px; }
+    .form-success h3 { font-family: 'Noto Serif KR', serif; font-size: 20px; color: #1a1a1a; margin-bottom: 10px; }
+    .form-success p { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #888; line-height: 1.8; }
+
     .kakao-float { position: fixed; right: 20px; bottom: 80px; width: 54px; height: 54px; background: #FEE500; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s; }
     .kakao-float:hover { transform: scale(1.1); box-shadow: 0 0 0 3px #F5E090, 0 6px 20px rgba(0,0,0,0.3); }
   </style>
@@ -38,10 +102,146 @@
         <span class="divider">/</span>
         <h1>구매 문의</h1>
       </div>
-      <div class="empty-state">
-        <div class="empty-icon">📩</div>
-        <span class="gold-line"></span>
-        <p>문의 내용을 준비 중입니다.<br>곧 업데이트될 예정입니다.</p>
+
+      <div class="contact-title">
+        <h2>CONTACT US</h2>
+        <div class="gold-bar"><span>★</span></div>
+        <p>금화 구매 및 투자 관련 문의는 아래 채널로 연락주시거나<br>문의 양식을 통해 남겨주시면 빠르게 답변드리겠습니다.</p>
+      </div>
+
+      <div class="contact-layout">
+
+        <!-- 왼쪽: 연락처 정보 -->
+        <div class="contact-info">
+
+          <!-- 카카오톡 -->
+          <div class="info-card">
+            <div class="info-card-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3C6.48 3 2 6.92 2 11.75c0 2.99 1.87 5.63 4.72 7.19l-.96 3.56a.4.4 0 0 0 .59.46l4.32-2.89c.42.04.85.06 1.33.06 5.52 0 10-3.92 10-8.75S17.52 3 12 3z" fill="#C8A84B"/>
+                </svg>
+              </div>
+              <h3>KAKAO TALK</h3>
+            </div>
+            <p class="info-value">미다스불리온</p>
+            <p class="info-sub">카카오톡 채널 검색 후 채팅 문의</p>
+            <a href="#" class="kakao-btn" style="margin-top:14px;">
+              <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><path d="M16 2C8.27 2 2 7.37 2 14c0 4.2 2.65 7.9 6.67 10.1L7.1 28.8a.6.6 0 0 0 .84.76l6.4-4.27c.54.05 1.09.08 1.66.08 7.73 0 14-5.37 14-12S23.73 2 16 2z" fill="#3C1E1E"/></svg>
+              카카오톡으로 문의하기
+            </a>
+          </div>
+
+          <!-- 전화 -->
+          <div class="info-card">
+            <div class="info-card-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.17h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <h3>PHONE</h3>
+            </div>
+            <p class="info-value">02-1234-5678</p>
+            <p class="info-sub">평일 10:00 ~ 18:00</p>
+          </div>
+
+          <!-- 이메일 -->
+          <div class="info-card">
+            <div class="info-card-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <h3>EMAIL</h3>
+            </div>
+            <p class="info-value">info@midasbullion.kr</p>
+            <p class="info-sub">24시간 접수 · 영업일 기준 1일 내 답변</p>
+          </div>
+
+          <!-- 운영시간 -->
+          <div class="info-card">
+            <div class="info-card-header">
+              <div class="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C8A84B" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <h3>HOURS</h3>
+            </div>
+            <div class="hours-grid">
+              <div class="hours-row"><span class="day">월 — 금</span><span class="time">10:00 – 18:00</span></div>
+              <div class="hours-row"><span class="day">점심시간</span><span class="time">12:00 – 13:00</span></div>
+              <div class="hours-row closed"><span class="day">토 · 일</span><span class="time">휴무</span></div>
+              <div class="hours-row closed"><span class="day">공휴일</span><span class="time">휴무</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 오른쪽: 문의 폼 -->
+        <div class="contact-form-wrap">
+          <div id="contact-form-inner">
+            <p class="form-title">문의 양식</p>
+
+            <div class="form-row-double">
+              <div class="form-row">
+                <label>이름 <span>*</span></label>
+                <input type="text" id="f-name" placeholder="홍길동">
+              </div>
+              <div class="form-row">
+                <label>연락처 <span>*</span></label>
+                <input type="tel" id="f-tel" placeholder="010-0000-0000">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>이메일</label>
+              <input type="email" id="f-email" placeholder="example@email.com">
+            </div>
+
+            <div class="form-row">
+              <label>문의 유형 <span>*</span></label>
+              <select id="f-type">
+                <option value="" disabled selected>선택해주세요</option>
+                <option>금화 구매 문의</option>
+                <option>가격 및 시세 문의</option>
+                <option>재고 확인</option>
+                <option>배송 문의</option>
+                <option>기타</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label>관심 상품</label>
+              <input type="text" id="f-product" placeholder="예: 아메리칸 이글 1oz 2026">
+            </div>
+
+            <div class="form-row">
+              <label>문의 내용 <span>*</span></label>
+              <textarea id="f-message" placeholder="문의하실 내용을 자유롭게 작성해주세요."></textarea>
+            </div>
+
+            <div class="form-agree">
+              <input type="checkbox" id="f-agree">
+              <label for="f-agree">
+                <a href="#">개인정보 처리방침</a>에 동의합니다. 수집된 정보는 문의 답변 목적으로만 사용되며, 답변 완료 후 즉시 삭제됩니다.
+              </label>
+            </div>
+
+            <button class="btn-submit" onclick="submitForm()">문의 보내기</button>
+          </div>
+
+          <div class="form-success" id="form-success">
+            <div class="success-icon">✉️</div>
+            <h3>문의가 접수되었습니다</h3>
+            <p>빠른 시일 내에 연락드리겠습니다.<br>영업일 기준 1일 이내 답변을 드립니다.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -57,5 +257,23 @@
 
   <script src="footer.js"></script>
   <script src="nav.js"></script>
+  <script>
+    function submitForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const tel = document.getElementById('f-tel').value.trim();
+      const type = document.getElementById('f-type').value;
+      const message = document.getElementById('f-message').value.trim();
+      const agree = document.getElementById('f-agree').checked;
+
+      if (!name) { alert('이름을 입력해주세요.'); return; }
+      if (!tel) { alert('연락처를 입력해주세요.'); return; }
+      if (!type) { alert('문의 유형을 선택해주세요.'); return; }
+      if (!message) { alert('문의 내용을 입력해주세요.'); return; }
+      if (!agree) { alert('개인정보 처리방침에 동의해주세요.'); return; }
+
+      document.getElementById('contact-form-inner').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
