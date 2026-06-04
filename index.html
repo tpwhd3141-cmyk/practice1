@@ -158,10 +158,14 @@
   <!-- Shop By Brand -->
   <section class="section brand-section">
     <div class="container">
-      <div class="section-header-truney">
+      <div class="section-header-truney" style="text-align:center;">
         <h2>BRANDS</h2>
         <div class="section-line"></div>
         <a href="#" class="check-all-btn">전체 브랜드 보기</a>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;">
+          <button id="brand-prev" style="width:38px;height:38px;border-radius:50%;border:1px solid #C8A84B;background:#fff;color:#C8A84B;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">←</button>
+          <button id="brand-next" style="width:38px;height:38px;border-radius:50%;border:1px solid #C8A84B;background:#fff;color:#C8A84B;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">→</button>
+        </div>
       </div>
       <style>.brand-grid{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:16px!important;padding-bottom:12px!important;scrollbar-width:none!important;-ms-overflow-style:none!important;}.brand-grid::-webkit-scrollbar{display:none!important;}.brand-grid .brand-card{min-width:180px!important;flex-shrink:0!important;}</style>
       <div class="brand-grid">
@@ -386,6 +390,26 @@
         brandGrid.scrollLeft = scrollLeft - (x - startX);
       });
       brandGrid.style.cursor = 'grab';
+
+      // 화살표 버튼
+      const SCROLL_AMOUNT = 220;
+      const brandPrev = document.getElementById('brand-prev');
+      const brandNext = document.getElementById('brand-next');
+
+      function smoothScroll(target, amount) {
+        target.scrollBy({ left: amount, behavior: 'smooth' });
+      }
+
+      if (brandPrev) {
+        brandPrev.addEventListener('click', () => smoothScroll(brandGrid, -SCROLL_AMOUNT));
+        brandPrev.addEventListener('mouseenter', () => { brandPrev.style.background = '#C8A84B'; brandPrev.style.color = '#fff'; });
+        brandPrev.addEventListener('mouseleave', () => { brandPrev.style.background = '#fff'; brandPrev.style.color = '#C8A84B'; });
+      }
+      if (brandNext) {
+        brandNext.addEventListener('click', () => smoothScroll(brandGrid, SCROLL_AMOUNT));
+        brandNext.addEventListener('mouseenter', () => { brandNext.style.background = '#C8A84B'; brandNext.style.color = '#fff'; });
+        brandNext.addEventListener('mouseleave', () => { brandNext.style.background = '#fff'; brandNext.style.color = '#C8A84B'; });
+      }
     }
   </script>
 
