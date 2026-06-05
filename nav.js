@@ -111,7 +111,7 @@
           <button class="search-btn">검색</button>
         </div>
         <div class="header-icons">
-          <button class="icon-btn" aria-label="장바구니" onclick="openCart()">
+          <button class="icon-btn" aria-label="장바구니" onclick="typeof openCart === 'function' && openCart()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span class="cart-count">0</span>
           </button>
