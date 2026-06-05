@@ -232,7 +232,11 @@ img { max-width: 100%; display: block; }
   .cat-banner { height: 180px; }
   .hero-slider { height: 400px; }
   .slide-title { font-size: 24px; }
-  .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .products-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .product-info { padding: 10px; }
+  .product-name { font-size: 13px; }
+  .product-price { font-size: 14px; }
+  .btn-cart { font-size: 12px; padding: 9px; }
   .brand-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-inner { grid-template-columns: 1fr; }
   .location-grid { grid-template-columns: 1fr; }
@@ -240,7 +244,12 @@ img { max-width: 100%; display: block; }
   .check-all-btn { position: static; display: block; margin-top: 10px; }
 }
 @media (max-width: 480px) {
-  .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .products-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .product-img-area { padding: 12px; }
+  .product-info { padding: 8px; }
+  .product-name { font-size: 12px; }
+  .product-price { font-size: 13px; }
+  .btn-cart { font-size: 11px; padding: 8px; letter-spacing: 0; }
   .brand-grid { grid-template-columns: repeat(2, 1fr); }
   .product-tabs { gap: 0; }
   .ptab { padding: 8px 12px; font-size: 12px; }
