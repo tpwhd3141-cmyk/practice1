@@ -31,11 +31,12 @@
     .soldout-overlay span { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 4px; color: #fff; border: 1px solid #fff; padding: 6px 14px; opacity: 0.8; }
 
     .btn-cart-wrap { display: flex; flex-direction: column; align-items: stretch; gap: 5px; margin-top: 10px; }
-    .btn-sameday-buy { width: 100%; background: #C8A84B; color: #fff; border: none; padding: 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, color 0.2s; letter-spacing: 1px; }
-    .btn-sameday-buy:hover { background: #F5E090; color: #1a1200; }
     .btn-buy { width: 100%; background: #C8A84B; color: #fff; border: none; padding: 10px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background 0.2s, color 0.2s; letter-spacing: 1px; }
     .btn-buy:hover { background: #F5E090; color: #1a1200; }
     .btn-soldout { width: 100%; background: #2a2a2a; color: #555; border: 1px solid #333; padding: 10px; font-size: 13px; letter-spacing: 2px; cursor: not-allowed; }
+
+    /* 카드에 커서 포인터 */
+    .product-card { cursor: pointer; }
   </style>
 </head>
 <body>
@@ -123,16 +124,6 @@
       const raw = priceEl.textContent.replace(/[₩,]/g, '').trim();
       return parseInt(raw) || 0;
     }
-    function addToCart(btn, name, price) {
-      if (!price || price === 0) { showToast('가격 로딩 중입니다. 잠시 후 다시 시도해주세요.'); return; }
-      const existing = cart.find(i => i.name === name);
-      if (existing) { existing.qty++; } else { cart.push({ name, price, qty: 1 }); }
-      updateCartUI();
-      showToast(`${name} 장바구니에 담겼습니다`);
-      const origText = btn.classList.contains('btn-sameday-buy') ? '당일수령 가능' : '구매하기';
-      btn.textContent = '✓ 담겼습니다';
-      setTimeout(() => { btn.textContent = origText; }, 2000);
-    }
     function removeFromCart(index) { cart.splice(index, 1); updateCartUI(); }
     function updateCartUI() {
       const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
@@ -210,7 +201,7 @@
 
     // ===== 카드 생성 =====
     function createProductCard(product, krwPrice) {
-      const { name, brand, category, premium, available, same_day } = product;
+      const { name, brand, category, premium, available } = product;
       const imgSrc = getImageForProduct(name);
       const filterCategory = getCategoryFilter(category);
       const price = krwPrice
@@ -221,19 +212,20 @@
         : '';
       const placeholderHTML = `<div class="product-img-placeholder" style="${imgSrc ? 'display:none' : 'display:flex'}"><span>${name.substring(0, 6)}</span></div>`;
       const isAvailable = available === 'TRUE' || available === true;
-      const isSameDay   = same_day === 'TRUE' || same_day === true;
+
+      // 카드/버튼 모두 상세 페이지로 이동
+      const detailUrl = `coin-detail.html?name=${encodeURIComponent(name)}`;
 
       let btnHTML;
       if (!isAvailable) {
-        btnHTML = `<button class="btn-cart btn-soldout" disabled>품절</button>`;
-      } else if (isSameDay) {
-        btnHTML = `<button class="btn-cart btn-sameday-buy" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">당일수령 가능</button>`;
+        btnHTML = `<button class="btn-cart btn-soldout" onclick="event.stopPropagation(); location.href='${detailUrl}'">품절</button>`;
       } else {
-        btnHTML = `<button class="btn-cart btn-buy" onclick="addToCart(this, '${name.replace(/'/g, "\\'")}', getCardPrice(this))">구매하기</button>`;
+        btnHTML = `<button class="btn-cart btn-buy" onclick="event.stopPropagation(); location.href='${detailUrl}'">상품 보기</button>`;
       }
 
       return `
-        <div class="product-card ${!isAvailable ? 'card-soldout' : ''}" data-category="${filterCategory}" data-premium="${premium}">
+        <div class="product-card ${!isAvailable ? 'card-soldout' : ''}" data-category="${filterCategory}" data-premium="${premium}"
+          onclick="location.href='${detailUrl}'">
           <div class="product-img-area">
             ${imgHTML}${placeholderHTML}
             ${!isAvailable ? '<div class="soldout-overlay"><span>SOLD OUT</span></div>' : ''}
