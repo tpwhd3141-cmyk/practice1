@@ -141,7 +141,6 @@
       { keywords: ['2026 케이브라이언', '2026 cave lion'],                file: 'products-cave-lion-2026' },
       { keywords: ['2026 로얄드래곤', '2026 royal dragon'],               file: 'products-royal-dragon-2026' },
       { keywords: ['2026 브리티시라이언', '2026 british lion'],           file: 'products-british-lion-2026' },
-      { keywords: ['2026 세인트조지드래곤', '2026 st george dragon'],     file: 'products-st-george-dragon-2026' },
       { keywords: ['2025 레이디저스티스', '2025 lady justice'],           file: 'products-lady-justice-2025' },
     ];
 
@@ -231,8 +230,6 @@
           </div>
         </div>`;
 
-      // 썸네일 중 이미지 없는 것 숨기기 (onerror로 처리됨)
-      // 카카오 링크 설정 (nav.js에서 설정한 href 유지하거나 별도 처리)
     }
 
     // 썸네일 클릭 시 메인 이미지 교체
@@ -278,7 +275,7 @@
 
         if (!product) {
           document.getElementById('detail-content').innerHTML =
-            `<div class="error-msg"><p>상품을 찾을 수 없습니다.</p><a href="gold-coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
+            `<div class="error-msg"><p>상품을 찾을 수 없습니다.</p><a href="coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
           return;
         }
 
@@ -303,7 +300,7 @@
       } catch (e) {
         console.error('상품 로딩 오류:', e);
         document.getElementById('detail-content').innerHTML =
-          `<div class="error-msg"><p>상품 정보를 불러오는 중 오류가 발생했습니다.</p><a href="gold-coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
+          `<div class="error-msg"><p>상품 정보를 불러오는 중 오류가 발생했습니다.</p><a href="coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
       }
     }
 
@@ -313,7 +310,7 @@
 
     if (!productName) {
       document.getElementById('detail-content').innerHTML =
-        `<div class="error-msg"><p>상품 정보가 없습니다.</p><a href="gold-coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
+        `<div class="error-msg"><p>상품 정보가 없습니다.</p><a href="coins.html" style="color:#C8A84B;">← 목록으로 돌아가기</a></div>`;
     } else {
       loadProduct(decodeURIComponent(productName));
     }
