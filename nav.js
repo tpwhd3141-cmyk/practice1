@@ -13,7 +13,10 @@
       display:flex; align-items:center; gap:8px;
       background:transparent; color:#333;
       border:1px solid #ccc; border-radius:6px;
-      padding:6px 12px; font-family:'Noto Serif KR',serif;
+      padding:0 12px;
+      height:44px;
+      box-sizing:border-box;
+      font-family:'Noto Serif KR',serif;
       font-size:13px; letter-spacing:1px; cursor:pointer;
       outline:none; white-space:nowrap;
       transition: border-color 0.2s;
@@ -138,13 +141,11 @@
         menu.classList.remove('open');
       }
 
-      // 클릭 (PC)
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         openDropdown();
       });
 
-      // 터치 (모바일/태블릿) — justToggled 플래그로 document 리스너 충돌 방지
       btn.addEventListener('touchend', function(e) {
         e.preventDefault();
         justToggled = true;
@@ -152,14 +153,12 @@
         setTimeout(() => { justToggled = false; }, 0);
       });
 
-      // 외부 클릭 시 닫기 (PC)
       document.addEventListener('click', function(e) {
         if (!btn.contains(e.target) && !menu.contains(e.target)) {
           closeDropdown();
         }
       });
 
-      // 외부 터치 시 닫기 (모바일/태블릿) — justToggled면 무시
       document.addEventListener('touchend', function(e) {
         if (justToggled) return;
         if (!btn.contains(e.target) && !menu.contains(e.target)) {
