@@ -292,7 +292,7 @@ function applyScrollAnimation(els) {
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0 }); // ✅ 0.1 → 0 변경: 1픽셀이라도 화면에 걸리면 즉시 감지
 
   els.forEach(el => {
     el.style.opacity = '0';
@@ -302,11 +302,7 @@ function applyScrollAnimation(els) {
   });
 }
 
-document.querySelectorAll('.brand-card, .cat-banner').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s, border-color 0.2s';
-});
+// ✅ 중복 forEach 제거 — applyScrollAnimation 내부에서 처리하므로 불필요
 applyScrollAnimation(document.querySelectorAll('.brand-card, .cat-banner'));
 
 // ===== HEADER SCROLL SHADOW =====
