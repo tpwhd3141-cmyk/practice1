@@ -44,6 +44,31 @@
       font-size:28px; cursor:pointer; line-height:1;
       padding:4px 8px;
     }
+
+    /* ── Shimmer 공통 ── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+    /* 탑바용 shimmer (어두운 배경) */
+    .shimmer-bar {
+      display: inline-block;
+      border-radius: 4px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.08) 25%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.08) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+      vertical-align: middle;
+      width: 56px; height: 13px;
+    }
+    /* 금시세 카드용 shimmer (밝은 배경) */
+    .shimmer-card-line {
+      display: block;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #ede8da 25%, #f5f0e6 50%, #ede8da 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    .shimmer-card-lg { width: 75%; height: 28px; }
   `;
   document.head.appendChild(style);
 
@@ -59,10 +84,10 @@
     topBar.innerHTML = `
       <div class="top-bar-inner">
         <div class="top-bar-prices">
-          <span class="price-item">금 <span class="price-val gold" id="tb-gold">로딩중</span></span>
-          <span class="price-item">은 <span class="price-val silver" id="tb-silver">로딩중</span></span>
-          <span class="price-item">백금 <span class="price-val platinum" id="tb-platinum">로딩중</span></span>
-          <span class="price-item">환율 <span class="price-val" id="tb-rate" style="color:#a0c4ff;">로딩중</span></span>
+          <span class="price-item">금 <span class="price-val gold" id="tb-gold"><span class="shimmer-bar"></span></span></span>
+          <span class="price-item">은 <span class="price-val silver" id="tb-silver"><span class="shimmer-bar"></span></span></span>
+          <span class="price-item">백금 <span class="price-val platinum" id="tb-platinum"><span class="shimmer-bar"></span></span></span>
+          <span class="price-item">환율 <span class="price-val" id="tb-rate" style="color:#a0c4ff;"><span class="shimmer-bar"></span></span></span>
         </div>
       </div>`;
   }
