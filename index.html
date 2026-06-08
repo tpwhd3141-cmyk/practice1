@@ -49,6 +49,8 @@
       }
     }
     .kakao-float { position: fixed; right: 20px; bottom: 80px; width: 54px; height: 54px; background: #FEE500; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s; }
+    /* 카드 전체 클릭 커서 */
+    .cat-banner { cursor: pointer; display: block; }
   </style>
 </head>
 <body>
@@ -119,18 +121,18 @@
 
   <!-- Category Banners -->
   <section class="category-banners">
-    <div class="cat-banner cat-gold">
+    <a href="coins.html" class="cat-banner cat-gold" style="text-decoration:none;">
       <div class="cat-overlay"></div>
-      <div class="cat-content"><h3>금화</h3><a href="coins.html" class="cat-btn">구매하기</a></div>
-    </div>
-    <div class="cat-banner cat-silver">
+      <div class="cat-content"><h3>금화</h3><span class="cat-btn">구매하기</span></div>
+    </a>
+    <a href="gold-price.html" class="cat-banner cat-silver" style="text-decoration:none;">
       <div class="cat-overlay"></div>
-      <div class="cat-content"><h3>금 시세</h3><a href="gold-price.html" class="cat-btn">시세 확인</a></div>
-    </div>
-    <div class="cat-banner cat-collectible">
+      <div class="cat-content"><h3>금 시세</h3><span class="cat-btn">시세 확인</span></div>
+    </a>
+    <a href="contact.html" class="cat-banner cat-collectible" style="text-decoration:none;">
       <div class="cat-overlay"></div>
-      <div class="cat-content"><h3>문의</h3><a href="contact.html" class="cat-btn">문의하기</a></div>
-    </div>
+      <div class="cat-content"><h3>문의</h3><span class="cat-btn">문의하기</span></div>
+    </a>
   </section>
 
   <!-- Newest Products -->
