@@ -18,11 +18,9 @@
     .page-header .divider { color: #ccc; }
     .page-header span.crumb { font-size: 13px; color: #999; font-family: 'Noto Sans KR', sans-serif; }
 
-    /* 상세 레이아웃 */
     .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
     @media (max-width: 768px) { .product-detail { grid-template-columns: 1fr; gap: 32px; } }
 
-    /* 이미지 갤러리 */
     .gallery { display: flex; flex-direction: column; gap: 12px; }
     .gallery-main { width: 100%; aspect-ratio: 1; background: #1a1a1a; overflow: hidden; position: relative; border: 1px solid #2a2a2a; }
     .gallery-main img { width: 100%; height: 100%; object-fit: contain; transition: opacity 0.3s ease; padding: 20px; box-sizing: border-box; }
@@ -33,7 +31,6 @@
     .gallery-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #555; font-size: 10px; font-family: 'Cinzel', serif; }
     .gallery-no-image { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a1a, #2a2a2a); color: #C8A84B; font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 2px; }
 
-    /* 상품 정보 */
     .product-info-panel { display: flex; flex-direction: column; gap: 20px; }
     .product-brand-label { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 3px; color: #C8A84B; text-transform: uppercase; }
     .product-title { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 600; color: #1a1a1a; line-height: 1.4; margin: 0; }
@@ -47,7 +44,6 @@
 
     .product-description { font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #555; line-height: 1.9; white-space: pre-line; }
 
-    /* 버튼 */
     .btn-inquiry {
       display: block; width: 100%; padding: 16px;
       background: #1a1a1a; color: #C8A84B;
@@ -69,14 +65,12 @@
 
     .soldout-badge { display: inline-block; padding: 6px 16px; background: #2a2a2a; color: #666; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 3px; border: 1px solid #333; }
 
-    /* 로딩 */
     .detail-loading { display: flex; flex-direction: column; align-items: center; padding: 6rem 0; gap: 1rem; color: #888; }
     .loading-spinner { width: 36px; height: 36px; border: 3px solid #2a2a2a; border-top-color: #C8A84B; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .error-msg { text-align: center; padding: 4rem; color: #888; font-family: 'Noto Sans KR', sans-serif; }
 
-    /* 카카오 플로팅 */
     .kakao-float { position: fixed; right: 20px; bottom: 80px; width: 54px; height: 54px; background: #FEE500; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 0 0 3px #C8A84B, 0 4px 16px rgba(0,0,0,0.25); transition: transform 0.2s, box-shadow 0.2s; }
     .kakao-float:hover { transform: scale(1.1); }
   </style>
@@ -152,7 +146,6 @@
       return null;
     }
 
-    // 앞면, 뒷면, detail1, detail2 순서로 존재하는 이미지만 반환
     function buildImageList(baseFile) {
       if (!baseFile) return [];
       return [
@@ -163,7 +156,6 @@
       ];
     }
 
-    // nav.js가 시세 받으면 자동 호출 — 코인 페이지와 동일한 방식
     let currentProduct = null;
     function updateCardPricesFromSheet(krwPerOz) {
       const priceEl = document.getElementById('detail-price-value');
@@ -180,15 +172,13 @@
       const baseFile = getBaseFile(name);
       const images = buildImageList(baseFile);
 
-      // 가격 영역
-      let priceHTML;
-      if (!isAvailable) {
-        priceHTML = `<span class="soldout-badge">SOLD OUT</span>`;
-      } else {
-        priceHTML = `<div class="product-price-value loading" id="detail-price-value">로딩 중...</div><div class="product-price-note">* 금 시세에 따라 변동될 수 있습니다</div>`;
-      }
+      // ✅ 수정: 품절이어도 가격 + SOLD OUT 배지 같이 표시
+      const priceHTML = `
+        <div class="product-price-value loading" id="detail-price-value">로딩 중...</div>
+        <div class="product-price-note">* 금 시세에 따라 변동될 수 있습니다</div>
+        ${!isAvailable ? '<div style="margin-top:10px;"><span class="soldout-badge">SOLD OUT</span></div>' : ''}
+      `;
 
-      // 갤러리 썸네일 HTML
       const thumbsHTML = images.map((img, i) => `
         <div class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="switchImage(${i})" data-index="${i}">
           <img src="${img.src}" alt="${img.label}"
@@ -229,10 +219,8 @@
             </div>
           </div>
         </div>`;
-
     }
 
-    // 썸네일 클릭 시 메인 이미지 교체
     function switchImage(index) {
       const thumbs = document.querySelectorAll('.gallery-thumb');
       const mainImg = document.getElementById('gallery-main-img');
@@ -252,7 +240,6 @@
       }
     }
 
-    // 구글 시트에서 해당 상품 찾기
     async function loadProduct(targetName) {
       try {
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=상품`;
@@ -279,14 +266,12 @@
           return;
         }
 
-        // 페이지 타이틀, 브레드크럼 업데이트
         document.title = `MIDAS BULLION | ${product.name}`;
         const breadcrumb = document.getElementById('breadcrumb-name');
         if (breadcrumb) breadcrumb.textContent = product.name;
 
         renderDetail(product);
 
-        // nav.js보다 시트 로딩이 빨리 끝난 경우 대비 — 탑바 가격에서 시세 역산해서 바로 업데이트
         const tbGold = document.getElementById('tb-gold');
         const tbRate = document.getElementById('tb-rate');
         if (tbGold && tbRate) {
@@ -304,7 +289,6 @@
       }
     }
 
-    // URL 파라미터에서 상품명 읽기
     const params = new URLSearchParams(window.location.search);
     const productName = params.get('name');
 
