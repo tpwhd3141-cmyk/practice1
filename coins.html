@@ -35,7 +35,8 @@
     .btn-buy:hover { background: #F5E090; color: #1a1200; }
     .btn-soldout { width: 100%; background: #2a2a2a; color: #555; border: 1px solid #333; padding: 10px; font-size: 13px; letter-spacing: 2px; cursor: pointer; }
 
-    .product-card { cursor: pointer; }
+    /* ✅ 수정: flex 구조 유지하면서 cursor: pointer 추가 */
+    .product-card { display: flex; flex-direction: column; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -216,7 +217,6 @@
 
       let btnHTML;
       if (!isAvailable) {
-        // ✅ 수정: 품절 버튼 텍스트를 '상품 보기'로 변경, cursor도 pointer로
         btnHTML = `<button class="btn-cart btn-soldout" onclick="event.stopPropagation(); location.href='${detailUrl}'">상품 보기</button>`;
       } else {
         btnHTML = `<button class="btn-cart btn-buy" onclick="event.stopPropagation(); location.href='${detailUrl}'">상품 보기</button>`;
@@ -233,7 +233,6 @@
             <p class="product-brand">${brand}</p>
             <h3 class="product-name">${name}</h3>
             <div class="product-price-wrap">
-              <!-- ✅ 수정: 품절 여부와 관계없이 실제 가격 표시 -->
               <span class="product-price card-price">${price}</span>
             </div>
             <div class="btn-cart-wrap">${btnHTML}</div>
